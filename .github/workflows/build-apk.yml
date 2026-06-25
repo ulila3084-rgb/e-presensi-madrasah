@@ -3,7 +3,7 @@ name: Deploy to Google Apps Script
 on:
   push:
     branches:
-      - main # Atau nama branch utama Anda (misal: master)
+      - main # Ganti ke 'master' jika nama branch utama Anda masih master
 
 jobs:
   deploy:
@@ -14,22 +14,21 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js (Hanya digunakan untuk menjalankan CLASP, bukan project Anda)
+      # 2. Setup Node.js (Hanya untuk menjalankan tool Clasp di server GitHub)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # JANGAN gunakan baris cache: 'npm' di sini karena tidak ada package-lock.json
 
-      # 3. Menginstal CLASP (Alat resmi Google untuk push kode ke Apps Script)
+      # 3. Menginstal Clasp secara global di server GitHub
       - name: Install Clasp
         run: npm install -g @google/clasp
 
-      # 4. Membuat file kredensial login Clasp secara otomatis
+      # 4. Membuat file kredensial login secara otomatis dari GitHub Secrets
       - name: Create clasprc.json
         run: |
           echo '${{ secrets.CLASPRC_JSON }}' > ~/.clasprc.json
 
-      # 5. Push kode code.gs dan index.html Anda ke Google Drive / Apps Script
+      # 5. Dorong/Push kode code.gs dan index.html ke Google Apps Script
       - name: Push code to Apps Script
         run: clasp push -f
