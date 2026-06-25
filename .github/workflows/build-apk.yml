@@ -1,34 +1,54 @@
-name: Deploy to Google Apps Script
+name: Build Android APK
 
 on:
   push:
-    branches:
-      - main # Ganti ke 'master' jika nama branch utama Anda masih master
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Mengambil kode dari repositori GitHub Anda
-      - name: Checkout Repo
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js (Hanya untuk menjalankan tool Clasp di server GitHub)
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
+          cache: 'npm'
 
-      # 3. Menginstal Clasp secara global di server GitHub
-      - name: Install Clasp
-        run: npm install -g @google/clasp
-
-      # 4. Membuat file kredensial login secara otomatis dari GitHub Secrets
-      - name: Create clasprc.json
+      - name: Install Dependencies
         run: |
-          echo '${{ secrets.CLASPRC_JSON }}' > ~/.clasprc.json
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 5. Dorong/Push kode code.gs dan index.html ke Google Apps Script
-      - name: Push code to Apps Script
-        run: clasp push -f
+      - name: Build Web Application
+        run: npm run build
+
+      - name: Initialize Capacitor Android Project
+        run: |
+          npx cap init "Presensi MMU" "com.mmu.presensidigital" --web-dir=dist --copy
+          npx cap add android
+
+      - name: Sync Capacitor
+        run: npx cap sync
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Build Android APK (Gradle)
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: presensi-mmu-android-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
