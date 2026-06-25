@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer utilities {
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .animate-shake {
+    animation: shake 0.3s ease-in-out;
+  }
+}
+
+/* Print formatting rules */
+@media print {
+  header, nav, .no-print, footer, select, button, input {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11px !important;
+  }
+
+  /* Force print styles on containers */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Paper specific rules */
+  body.print-a4 {
+    width: 210mm;
+    height: 297mm;
+  }
+
+  body.print-f4 {
+    width: 215mm;
+    height: 330mm;
+  }
+
+  body.print-a5 {
+    width: 148mm;
+    height: 210mm;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+}

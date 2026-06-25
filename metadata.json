@@ -1,0 +1,6 @@
+{
+  "name": "Presensi Digital MMU Tsanawiyah",
+  "description": "Aplikasi Presensi Digital Guru MMU Tsanawiyah Ranting B-48 Jember, dilengkapi rekap harian, pekanan, dan bulanan serta sinkronisasi Google Sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
